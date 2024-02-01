@@ -63,7 +63,6 @@
     
 
     #gnome exclusive
-    switcheroo-control #dbus for dual gpu
     gnomeExtensions.appindicator
     gnomeExtensions.hide-top-bar
     gnomeExtensions.dash-to-dock
@@ -79,29 +78,18 @@
     #video player
     celluloid
 
-    #zsh shit
+    #zsh
     starship
     
-
     #ide 
     vscodium
     direnv
     
     #task-manager
     mission-center
-    
-    #recording 
-    obs-studio
-    
-    #communication
-    discord
-
+     
     #browser
-    brave
-
-    #xbox controllers
-    xboxdrv
-      
+    firefox      
   
     #themes
     whitesur-icon-theme
@@ -153,29 +141,13 @@
     mediainfo
     imagemagick
     libnotify
-    mangohud
-    
-   
-
-    # native wayland support (unstable)
-    wineWowPackages.waylandFull
-    
-    # asus system 
-    asusctl
-    supergfxctl
     
     #virtual machines
-    virt-manager
-    spice spice-gtk
-    spice-protocol
-    win-virtio
-    win-spice
-
-    #gaming
-    lutris
-    appimage-run
-    
-
+    # virt-manager
+    # spice spice-gtk
+    # spice-protocol
+    # win-virtio
+    # win-spice
   ];
 
   fonts.packages = with pkgs; [
@@ -187,39 +159,18 @@
     cascadia-code
   ];
 
-
-  
-
-  #virtmanager
-  programs.dconf.enable = true;
-  virtualisation = {
-    libvirtd = {
-      enable = true;
-      qemu = {
-        swtpm.enable = true;
-        ovmf.enable = true;
-        ovmf.packages = [ pkgs.OVMFFull.fd ];
-      };
-    };
-    spiceUSBRedirection.enable = true;
-  };
-  services.spice-vdagentd.enable = true;
-
-
-  #asus system services
-  services = {
-    asusd = {
-      enable = true;
-      enableUserService = true;
-    };
-  };
-  services.supergfxd.enable = true;
-  systemd.services.supergfxd.path = [ pkgs.pciutils ];
-
-
-
-  #gnome exclusive services
-  services.switcherooControl.enable = true;
-
-  
+  # #virtmanager
+  # programs.dconf.enable = true;
+  # virtualisation = {
+  #   libvirtd = {
+  #     enable = true;
+  #     qemu = {
+  #       swtpm.enable = true;
+  #       ovmf.enable = true;
+  #       ovmf.packages = [ pkgs.OVMFFull.fd ];
+  #     };
+  #   };
+  #   spiceUSBRedirection.enable = true;
+  # };
+  # services.spice-vdagentd.enable = true;  
 }

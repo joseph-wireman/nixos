@@ -6,8 +6,6 @@
     nix-software-center.url = "github:vlinkz/nix-software-center";
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
-    
-  
   };
 
   outputs = inputs@{ nixpkgs, nix-software-center, home-manager, ... }: {
@@ -23,7 +21,7 @@
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            home-manager.users.samuel = import ./home.nix;
+            home-manager.users.joseph = import ./home.nix;
           }
 
         ];

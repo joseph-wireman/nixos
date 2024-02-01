@@ -17,61 +17,14 @@
   nix = {
     optimise.automatic = true;
     settings.experimental-features = [ "nix-command" "flakes" ];
-
   };
-
-  #gnome patches
-  nixpkgs.overlays = [ 
-    
-    (self: super: {
-      gnome = super.gnome.overrideScope' (pself: psuper: {
-        
-        mutter = psuper.mutter.overrideAttrs (oldAttrs: {
-          patches = (oldAttrs.patches or [ ]) ++ [
-            
-            (super.fetchpatch {
-              url = "https://aur.archlinux.org/cgit/aur.git/plain/mr1441.patch?h=mutter-dynamic-buffering";
-              hash = "sha256-Nup+3/oGXTaeXy0shNbVRoygT9DVy6hiKBf8b1v97Wk=";
-            })
-
-            #Nvidia secondary GPU copy acceleration
-            (super.fetchpatch {
-              url = "https://gitlab.gnome.org/GNOME/mutter/-/merge_requests/3304.diff";
-              hash = "sha256-n3PMW5A40+Vr1m6bMWlsyCtDnI8JwsvLY1YtSJtfy0Q=";
-            })
-
-
-          ];
-        });
- 
-        
-        gnome-control-center = psuper.gnome-control-center.overrideAttrs (oldAttrs: {
-          patches = oldAttrs.patches ++ [
-            /*
-            #varaiable refresh rate in settings
-            
-            (super.fetchpatch {
-              url = "https://aur.archlinux.org/cgit/aur.git/plain/734.patch?h=gnome-control-center-vrr";
-              hash = "sha256-8FGPLTDWbPjY1ulVxJnWORmeCdWKvNKcv9OqOQ1k/bE=";
-            })
-            */
-          
-          ];
-        });
-        
-      });
-    })
-  ];
-
-
-
 
   environment = {
     shells = with pkgs; [ zsh bash dash ];
     binsh = "${pkgs.dash}/bin/dash";
 
     sessionVariables = rec {
-      NIXOS_OZONE_WL = "1";
+      # NIXOS_OZONE_WL = "1";
       XDG_CACHE_HOME  = "$HOME/.cache";
       XDG_CONFIG_HOME = "$HOME/.config";
       XDG_DATA_HOME   = "$HOME/.local/share";
@@ -94,7 +47,6 @@
       enable = true;
       desktopManager.gnome.enable = true;
       displayManager.gdm.enable = true;
-      videoDrivers = [ "nvidia" ];
        # Enable touchpad support (enabled default in most desktopManager).
       libinput.enable = true;
 
@@ -130,7 +82,7 @@
 
   #bootloader
   boot = {
-    kernelPackages = pkgs.linuxPackages_latest; #most update kernel    
+    kernelPackages = pkgs.linuxPackages_latest; #most updated kernel    
     loader = {
       systemd-boot.enable = false;
       grub = {
@@ -145,9 +97,6 @@
         efiSysMountPoint = "/boot";
       };
     };
-  
-    initrd.kernelModules = [ "nvidia" ]; 
-    blacklistedKernelModules = ["nouveau"];
   };
 
 
@@ -155,35 +104,14 @@
   
     opengl = {
       enable = true;
-      driSupport = true;
-      driSupport32Bit = true;
 
       extraPackages = with pkgs; [
-        rocm-opencl-icd
-        rocm-opencl-runtime
+        intel-media-driver
+        vaapiIntel
+        vaapiVdpau
+        libvdpau-va-gl
       ];
       
-    };
-
-    nvidia = {
-      modesetting.enable = true;
-      open = false;
-      nvidiaSettings = true;
-      dynamicBoost.enable = true; 
-      powerManagement.enable = true;
-      powerManagement.finegrained = true;
-      nvidiaPersistenced = true;
-
-
-      prime = { 
-        offload = {
-          enable = true;
-          enableOffloadCmd = true;
-        };
-
-        amdgpuBusId = "PCI:7:0:0";
-        nvidiaBusId = "PCI:1:0:0";
-      };
     };
 
     logitech.wireless.enable = true;
@@ -216,10 +144,7 @@
 
     
   };
-  
-
-
-  #time 
+   
   time.timeZone = "America/New_York";
   i18n.defaultLocale = "en_US.UTF-8";
 
@@ -228,36 +153,27 @@
       keyMap = "us";
   };
 
-
-
-
   programs = {
     zsh.enable = true;
 
   };
 
-
-
-
-
   #users
   users = {
     mutableUsers = true;
     groups = {
-      samuel.gid = 1000;
+      joseph.gid = 1000;
     };
    
-    users.samuel = {
+    users.joseph = {
       isNormalUser = true;
-      home = "/home/samuel";
+      home = "/home/joseph";
       shell = pkgs.zsh;
       uid = 1000;
-      group = "samuel";
+      group = "joseph";
       extraGroups = [ "wheel" "networkmanager" "libvirtd" ]; # Enable ‘sudo’ for the user.
     };
   };
-
-
 
   swapDevices = [{
     device = "/var/lib/swapfile";
@@ -266,7 +182,7 @@
 
 
   security = {
-  
+
     sudo = {
       enable = true;
       extraRules = [{
@@ -288,22 +204,7 @@
       }];
     };
     
-    #emulator memory
-    pam.loginLimits = [
-      {domain = "*";type = "hard";item = "memlock";value = "unlimited";}
-      {domain = "*";type = "soft";item = "memlock";value = "unlimited";}
-    ];
-
     #sound
     rtkit.enable = true;
-
   };
-
-
-
-
-
-
-
-
 }

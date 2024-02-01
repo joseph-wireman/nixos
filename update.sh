@@ -8,8 +8,6 @@ nix flake update
 #nix-channel --update
 nixos-rebuild switch -j 1 --impure
 
-
-
 # Delete all old generations except the current and the previous one
 nix-env --delete-generations old
 
